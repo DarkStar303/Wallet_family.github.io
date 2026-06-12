@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wallet Family - Panel Admin Pagos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
+  </head>
+
+  <body class="bg-light">
+    <div class="d-flex flex-column vh-100 overflow-hidden"> 
+      
+      <div class="d-md-none bg-dark text-white p-3 d-flex justify-content-between align-items-center shadow-sm">
+        <h2 class="h5 mb-0 fw-bold">
+          <i class="bi bi-wallet2 me-2"></i>Panel Admin
+        </h2>
+        <button class="btn btn-outline-light btn-sm border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#menuCelular">
+          <i class="bi bi-list fs-2"></i>
+        </button>
+      </div>
+
+      <div class="d-flex flex-grow-1 overflow-hidden">
+        
+        <div class="bg-dark text-white p-3 d-none d-md-flex flex-column shadow" style="width: 280px; min-width: 280px; overflow-y: auto">
+          <h2 class="text-center border-bottom border-light border-opacity-25 pb-3 mb-4 fs-4 mt-2 fw-bold">
+            Panel Admin
+          </h2>
+
+          <ul class="nav nav-pills flex-column mb-auto px-2">
+            <li class="nav-item mb-2">
+              <a href="admin_suscripciones.html" class="nav-link btn btn-light text-start w-100 fw-bold active">
+                <i class="bi bi-shield-check me-2"></i> Gestionar Pagos
+              </a>
+            </li>
+          </ul>
+
+          <div class="mt-auto">
+            <button id="btnLogout" class="btn btn-danger w-100 fw-bold shadow-sm">
+              <i class="bi bi-box-arrow-right me-2"></i> Cerrar Sesión
+            </button>
+          </div>
+        </div>
+
+        <div class="flex-grow-1 p-3 p-md-4 overflow-auto bg-light">
+          <div class="container-fluid">
+            <h2 class="mb-4 fw-bold">Pagos pendientes de revisión</h2>
+
+            <div id="alertMessage" class="d-none alert alert-dismissible fade show border-0 shadow-sm" role="alert">
+              <span id="alertText"></span>
+              <button type="button" class="btn-close" onclick="document.getElementById('alertMessage').classList.add('d-none')"></button>
+            </div>
+
+            <div class="card border-0 shadow-sm">
+              <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                  <thead class="table-light">
+                    <tr>
+                      <th>Familia</th>
+                      <th>Ref. Transacción</th>
+                      <th>Monto</th>
+                      <th>Comprobante</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tablaPendientes">
+                    <tr>
+                      <td colspan="5" class="text-center text-muted py-4">
+                        Buscando comprobantes en el servidor...
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div> </div> <div class="offcanvas offcanvas-start bg-dark text-white" tabindex="-1" id="menuCelular" style="width: 280px;">
+      <div class="offcanvas-header border-bottom border-light border-opacity-25">
+        <h5 class="offcanvas-title fw-bold">Panel Admin</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+      </div>
+      <div class="offcanvas-body d-flex flex-column">
+        <ul class="nav nav-pills flex-column mb-auto">
+          <li class="nav-item mb-2">
+            <a href="admin_suscripciones.html" class="nav-link btn btn-light text-start w-100 fw-bold active">
+              <i class="bi bi-shield-check me-2"></i> Gestionar Pagos
+            </a>
+          </li>
+        </ul>
+        <div class="mt-auto pt-3 border-top border-light border-opacity-25">
+          <button id="btnLogoutMobile" class="btn btn-danger w-100 fw-bold shadow-sm">
+            <i class="bi bi-box-arrow-right me-2"></i> Cerrar Sesión
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      const token = localStorage.getItem("auth_token");
+      if (!token) window.location.href = "login.html";
+
+      function mostrarAlerta(mensaje, isError = false) {
+        const alertBox = document.getElementById("alertMessage");
+        const alertText = document.getElementById("alertText");
+        alertBox.className = `alert alert-dismissible fade show border-0 shadow-sm ${isError ? "alert-danger" : "alert-success"}`;
+        alertBox.classList.remove("d-none");
+        alertText.innerHTML = `<i class="bi ${isError ? "bi-exclamation-triangle-fill" : "bi-check-circle-fill"} me-2"></i> ${mensaje}`;
+      }
+
+      async function cargarPendientes() {
+        try {
+          const response = await fetch("http://127.0.0.1:8000/api/admin/suscripciones", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+            },
+          });
+
+          if (response.status === 401 || response.status === 403) {
+            localStorage.removeItem("auth_token");
+            window.location.href = "login.html";
+            return;
+          }
+
+          const jsonResponse = await response.json();
+          const data = jsonResponse.data;
+          const tabla = document.getElementById("tablaPendientes");
+          tabla.innerHTML = "";
+
+          if (data.length === 0) {
+            tabla.innerHTML = `<tr><td colspan="5" class="text-center py-4">No hay comprobantes pendientes de revisión.</td></tr>`;
+            return;
+          }
+
+          data.forEach((suscripcion) => {
+            const familiaNombre = suscripcion.family ? suscripcion.family.name : "N/A";
+            const monto = parseFloat(suscripcion.payment_amount).toFixed(2);
+
+            let botonImagen = "No disponible";
+            if (suscripcion.image_path) {
+              const urlImagen = `http://127.0.0.1:8000/storage/${suscripcion.image_path}`;
+              botonImagen = `<a href="${urlImagen}" target="_blank" class="btn btn-sm btn-info text-white fw-bold"><i class="bi bi-image me-1"></i> Ver imagen</a>`;
+            }
+
+            tabla.innerHTML += `
+              <tr>
+                <td class="fw-bold">${familiaNombre}</td>
+                <td class="text-secondary">${suscripcion.payment_reference || "N/A"}</td>
+                <td class="text-success fw-bold">Bs ${monto}</td>
+                <td>${botonImagen}</td>
+                <td>
+                  <div class="d-flex gap-2">
+                    <button class="btn btn-sm btn-success fw-bold" onclick="verificarPago(${suscripcion.family_id})">
+                      <i class="bi bi-check-circle me-1"></i>Confirmar
+                    </button>
+                    <button class="btn btn-sm btn-danger fw-bold" onclick="rechazarPago(${suscripcion.family_id})">
+                      <i class="bi bi-x-circle me-1"></i>Rechazar
+                    </button>
+                  </div>
+                </td>
+              </tr>`;
+          });
+        } catch (error) {
+          console.error("Error al cargar la lista:", error);
+        }
+      }
+
+      window.verificarPago = async function (family_id) {
+        if (confirm("¿Estás segura de aprobar este pago y volver a la familia Premium?")) {
+          const response = await fetch(`http://127.0.0.1:8000/api/suscripcion/admin/verificar/${family_id}`, {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+            },
+          });
+
+          const data = await response.json();
+          if (response.ok) {
+            mostrarAlerta(data.message);
+            cargarPendientes();
+          } else {
+            mostrarAlerta(data.error || "Error al procesar la verificación.", true);
+          }
+        }
+      };
+
+      window.rechazarPago = async function (family_id) {
+        if (confirm("¿Rechazar este pago y borrar el comprobante?")) {
+          const response = await fetch(`http://127.0.0.1:8000/api/suscripcion/admin/rechazar/${family_id}`, {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+            },
+          });
+
+          const data = await response.json();
+          if (response.ok) {
+            mostrarAlerta(data.message);
+            cargarPendientes();
+          } else {
+            mostrarAlerta(data.error || "Error al procesar el rechazo.", true);
+          }
+        }
+      };
+
+      const logoutAction = async () => {
+        await fetch("http://127.0.0.1:8000/api/logout", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        });
+        localStorage.removeItem("auth_token");
+        window.location.href = "index.html";
+      };
+
+      document.getElementById("btnLogout").addEventListener("click", logoutAction);
+      document.getElementById("btnLogoutMobile").addEventListener("click", logoutAction);
+
+      cargarPendientes();
+    </script>
+  </body>
+</html>

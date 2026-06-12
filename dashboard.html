@@ -1,0 +1,817 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wallet Family - Resumen Familiar</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body class="bg-light">
+    <div
+      id="suspensionOverlay"
+      class="d-none position-fixed top-0 start-0 w-100 h-100 bg-secondary bg-opacity-75 z-3 d-flex justify-content-center align-items-center"
+      style="z-index: 9999"
+    >
+      <div
+        class="card border-0 shadow-lg p-5 text-center"
+        style="max-width: 450px"
+      >
+        <i class="bi bi-person-fill-lock text-danger display-1 mb-3"></i>
+        <h3 class="fw-bold text-dark">Acceso Restringido</h3>
+        <p class="text-secondary mb-4">
+          Tu cuenta fue suspendida por el administrador de esta familia. Si
+          crees que esto es un error, por favor comunícate con tu familia.
+        </p>
+        <button
+          class="btn btn-danger w-100 fw-bold py-2 shadow-sm"
+          onclick="ejecutarLogout()"
+        >
+          <i class="bi bi-box-arrow-right me-2"></i> Cerrar Sesión
+        </button>
+      </div>
+    </div>
+    <div class="d-flex flex-column vh-100 overflow-hidden">
+      <div
+        class="d-md-none bg-primary w-100 text-white p-3 d-flex justify-content-between align-items-center shadow-sm"
+      >
+        <h2 class="h5 mb-0 fw-bold">
+          <i class="bi bi-wallet2 me-2"></i>Wallet Family
+        </h2>
+        <button
+          class="btn btn-outline-light btn-sm border-0"
+          type="button"
+          data-bs-toggle="offcanvas"
+          data-bs-target="#menuCelular"
+        >
+          <i class="bi bi-list fs-1"></i>
+        </button>
+      </div>
+
+      <div class="d-flex flex-grow-1 overflow-hidden">
+        <div
+          class="bg-primary text-white p-3 d-none d-md-flex flex-column shadow"
+          style="width: 280px; min-width: 280px; overflow-y: auto"
+        >
+          <h2
+            class="text-center border-bottom border-light border-opacity-25 pb-3 mb-4 fs-4 mt-2 fw-bold"
+          >
+            Wallet Family
+          </h2>
+
+          <ul class="nav nav-pills flex-column mb-auto">
+            <li class="nav-item mb-2">
+              <a
+                href="dashboard.html"
+                class="nav-link text-white active bg-dark bg-opacity-25"
+                ><i class="bi bi-house-door me-2"></i> Resumen</a
+              >
+            </li>
+            <li class="nav-item mb-2">
+              <a href="ingresos.html" class="nav-link text-white"
+                ><i class="bi bi-cash-coin me-2"></i> Ingresos</a
+              >
+            </li>
+            <li class="nav-item mb-2">
+              <a href="gastos.html" class="nav-link text-white"
+                ><i class="bi bi-graph-down-arrow me-2"></i> Gastos</a
+              >
+            </li>
+            <li class="nav-item mb-2">
+              <a href="categorias.html" class="nav-link text-white"
+                ><i class="bi bi-tags me-2"></i> Categorías</a
+              >
+            </li>
+            <li class="nav-item mb-2">
+              <a href="pagos.html" class="nav-link text-white"
+                ><i class="bi bi-calendar-check me-2"></i> Pagos Programados</a
+              >
+            </li>
+            <li class="nav-item mb-2">
+              <a href="perfil.html" class="nav-link text-white"
+                ><i class="bi bi-person-circle me-2"></i> Mi Perfil</a
+              >
+            </li>
+            <li class="nav-item mb-2">
+              <a href="auditoria.html" class="nav-link text-white"
+                ><i class="bi bi-list-columns-reverse me-2"></i> Historial</a
+              >
+            </li>
+
+            <li id="menuSuscripcion" class="nav-item mb-2 d-none">
+              <a href="suscripcion.html" class="nav-link text-white"
+                ><i class="bi bi-shield-check me-2"></i> Mi Suscripción</a
+              >
+            </li>
+
+            <li
+              id="menu-admin-item"
+              class="nav-item mb-2 mt-4 border-top border-light border-opacity-25 pt-3 d-none"
+            >
+              <span
+                class="small text-white text-opacity-50 px-3 d-block mb-2 fw-bold"
+                >MÓDULO SEGURIDAD</span
+              >
+              <a href="panel-control.html" class="nav-link text-white"
+                ><i class="bi bi-shield-lock me-2"></i> Panel de Control</a
+              >
+            </li>
+          </ul>
+
+          <div class="mt-4">
+            <button
+              id="btnLogout"
+              class="btn btn-danger w-100 fw-bold shadow-sm text-start"
+            >
+              <i class="bi bi-box-arrow-right me-2"></i> Cerrar Sesión
+            </button>
+          </div>
+        </div>
+
+        <div class="flex-grow-1 p-3 p-md-4 overflow-auto bg-light">
+          <div
+            class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-4"
+          >
+            <div>
+              <h1 class="h3 mb-0 text-dark fw-bold">Panel de Control</h1>
+              <p class="mb-0 text-secondary">
+                Resumen de ingresos, gastos y reportes.
+              </p>
+            </div>
+            <div class="d-flex gap-3 align-items-center">
+              <div class="d-flex align-items-center">
+                <label
+                  for="limiteSelect"
+                  class="me-2 text-muted small mb-0 fw-bold"
+                  >Mostrar:</label
+                >
+                <select
+                  id="limiteSelect"
+                  class="form-select form-select-sm border-0 shadow-sm fw-bold text-primary"
+                >
+                  <option value="5">5 registros</option>
+                  <option value="20" selected>20 registros</option>
+                  <option value="40">40 registros</option>
+                </select>
+              </div>
+              <div class="bg-white p-2 rounded shadow-sm border">
+                <div
+                  class="form-check form-switch mb-0 d-flex align-items-center gap-2"
+                >
+                  <input
+                    class="form-check-input fs-4 mt-0"
+                    type="checkbox"
+                    role="switch"
+                    id="switchVistaFamiliar"
+                    checked
+                  />
+                  <label
+                    class="form-check-label fw-bold text-dark mt-1"
+                    for="switchVistaFamiliar"
+                    id="lblVistaFamiliar"
+                    >Vista Familiar</label
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            id="alertMessage"
+            class="d-none alert alert-dismissible fade show border-0 shadow-sm mb-4"
+            role="alert"
+          >
+            <span id="alertText"></span>
+            <button
+              type="button"
+              class="btn-close"
+              onclick="
+                document.getElementById('alertMessage').classList.add('d-none')
+              "
+            ></button>
+          </div>
+
+          <div class="row g-4 mb-4">
+            <div class="col-md-4">
+              <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                  <h5 class="card-title text-muted fs-6 mb-3">
+                    Total Ingresos
+                  </h5>
+                  <p class="card-text fs-2 fw-bold text-success mb-0">
+                    <span id="total-ingresos">0.00</span> Bs
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                  <h5 class="card-title text-muted fs-6 mb-3">Total Gastos</h5>
+                  <p class="card-text fs-2 fw-bold text-danger mb-0">
+                    <span id="total-gastos">0.00</span> Bs
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div
+                id="saldo-card"
+                class="card border-0 shadow-sm bg-primary text-white"
+              >
+                <div class="card-body p-4">
+                  <h5 class="card-title fs-6 mb-3 opacity-75">
+                    Saldo Disponible
+                  </h5>
+                  <p class="card-text fs-2 fw-bold mb-0">
+                    <span id="saldo-disponible">0.00</span> Bs
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row g-4">
+            <div class="col-lg-6">
+              <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white border-0 pt-3 pb-3">
+                  <h5 class="card-title fw-bold mb-0">
+                    <i class="bi bi-arrow-left-right text-primary me-2"></i
+                    >Últimos Movimientos
+                  </h5>
+                </div>
+                <div class="card-body p-0">
+                  <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                      <thead class="table-light">
+                        <tr>
+                          <th class="px-4 py-3">Concepto</th>
+                          <th class="px-4 py-3">Usuario</th>
+                          <th class="px-4 py-3 text-end">Monto</th>
+                        </tr>
+                      </thead>
+                      <tbody id="tabla-movimientos">
+                        <tr>
+                          <td colspan="3" class="text-center text-muted py-4">
+                            Cargando movimientos...
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-6">
+              <div class="card border-0 shadow-sm mb-4 bg-white">
+                <div class="card-header bg-white border-bottom-0 pt-3 pb-2">
+                  <h5 class="card-title fw-bold fs-6 text-dark mb-0">
+                    <i class="bi bi-gear-fill text-warning me-2"></i>Generar
+                    Nuevo Reporte
+                  </h5>
+                </div>
+                <div class="card-body p-3 bg-light rounded-bottom border-top">
+                  <form id="formGenerarReporte" class="row g-2 align-items-end">
+                    <div class="col-md-3">
+                      <label
+                        class="form-label small fw-bold text-secondary mb-1"
+                        >Tipo</label
+                      >
+                      <select
+                        id="repTipo"
+                        class="form-select form-select-sm border-0 shadow-sm"
+                        required
+                      >
+                        <option value="mensual">Mensual (General)</option>
+                        <option value="anual">Anual (General)</option>
+                        <option value="top_categorias">Top 5 Categorías</option>
+                        <option value="por_miembro">Aportes por Miembro</option>
+                        <option value="pagos_programados">
+                          Estado de Pagos
+                        </option>
+                      </select>
+                    </div>
+                    <div class="col-md-3">
+                      <label
+                        class="form-label small fw-bold text-secondary mb-1"
+                        >Año</label
+                      >
+                      <input
+                        type="number"
+                        id="repAnio"
+                        class="form-control form-control-sm border-0 shadow-sm"
+                        value="2026"
+                        min="2020"
+                        max="2030"
+                        required
+                      />
+                    </div>
+                    <div class="col-md-3" id="colMes">
+                      <label
+                        class="form-label small fw-bold text-secondary mb-1"
+                        >Mes</label
+                      >
+                      <select
+                        id="repMes"
+                        class="form-select form-select-sm border-0 shadow-sm"
+                      >
+                        <option value="1">Enero</option>
+                        <option value="2">Febrero</option>
+                        <option value="3">Marzo</option>
+                        <option value="4">Abril</option>
+                        <option value="5">Mayo</option>
+                        <option value="6" selected>Junio</option>
+                        <option value="7">Julio</option>
+                        <option value="8">Agosto</option>
+                        <option value="9">Septiembre</option>
+                        <option value="10">Octubre</option>
+                        <option value="11">Noviembre</option>
+                        <option value="12">Diciembre</option>
+                      </select>
+                    </div>
+                    <div class="col-md-3">
+                      <button
+                        type="submit"
+                        id="btnGenerarRep"
+                        class="btn btn-primary btn-sm w-100 fw-bold shadow-sm"
+                      >
+                        <i class="bi bi-lightning-charge me-1"></i>Generar
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+              <div
+                id="panelReporteEspecial"
+                class="card border-primary shadow-sm mb-4 d-none"
+              >
+                <div
+                  class="card-header bg-primary text-white pt-3 pb-2 d-flex justify-content-between align-items-center"
+                >
+                  <h5 class="card-title fw-bold fs-6 mb-0">
+                    <i class="bi bi-clipboard-data me-2"></i>Resultado del
+                    Reporte
+                  </h5>
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-danger fw-bold shadow-sm"
+                    onclick="limpiarReporteEspecial()"
+                  >
+                    <i class="bi bi-trash3-fill me-1"></i>Limpiar
+                  </button>
+                </div>
+                <div
+                  class="card-body p-4 bg-white rounded-bottom"
+                  id="contenidoReporteEspecial"
+                ></div>
+              </div>
+              <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 pt-3 pb-3">
+                  <h5 class="card-title fw-bold mb-0">
+                    <i class="bi bi-file-earmark-bar-graph text-info me-2"></i
+                    >Historial de Reportes
+                  </h5>
+                </div>
+                <div class="card-body p-0">
+                  <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                      <thead class="table-light">
+                        <tr>
+                          <th class="px-4 py-3">Periodo</th>
+                          <th class="px-4 py-3 text-end">Ingresos</th>
+                          <th class="px-4 py-3 text-end">Gastos</th>
+                          <th class="px-4 py-3 text-end">Balance</th>
+                        </tr>
+                      </thead>
+                      <tbody id="tabla-reportes">
+                        <tr>
+                          <td colspan="4" class="text-center text-muted py-4">
+                            Cargando reportes...
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="offcanvas offcanvas-start bg-primary text-white"
+      tabindex="-1"
+      id="menuCelular"
+    >
+      <div
+        class="offcanvas-header border-bottom border-light border-opacity-25"
+      >
+        <h5 class="offcanvas-title fw-bold">Menú Principal</h5>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          data-bs-dismiss="offcanvas"
+        ></button>
+      </div>
+      <div class="offcanvas-body d-flex flex-column">
+        <ul class="nav nav-pills flex-column mb-auto">
+          <li class="nav-item mb-2">
+            <a href="dashboard.html" class="nav-link text-white"
+              ><i class="bi bi-house-door me-2"></i> Resumen</a
+            >
+          </li>
+          <li class="nav-item mb-2">
+            <a href="ingresos.html" class="nav-link text-white"
+              ><i class="bi bi-cash-coin me-2"></i> Ingresos</a
+            >
+          </li>
+          <li class="nav-item mb-2">
+            <a href="gastos.html" class="nav-link text-white"
+              ><i class="bi bi-graph-down-arrow me-2"></i> Gastos</a
+            >
+          </li>
+          <li class="nav-item mb-2">
+            <a href="categorias.html" class="nav-link text-white"
+              ><i class="bi bi-tags me-2"></i> Categorías</a
+            >
+          </li>
+          <li class="nav-item mb-2">
+            <a href="pagos.html" class="nav-link text-white"
+              ><i class="bi bi-calendar-check me-2"></i> Pagos</a
+            >
+          </li>
+          <li class="nav-item mb-2">
+            <a href="perfil.html" class="nav-link text-white"
+              ><i class="bi bi-person-circle me-2"></i> Mi Perfil</a
+            >
+          </li>
+          <li class="nav-item mb-2">
+            <a href="auditoria.html" class="nav-link text-white"
+              ><i class="bi bi-list-columns-reverse me-2"></i> Historial</a
+            >
+          </li>
+
+          <li id="menuSuscripcionMobile" class="nav-item mb-2 d-none">
+            <a href="suscripcion.html" class="nav-link text-white"
+              ><i class="bi bi-shield-check me-2"></i> Mi Suscripción</a
+            >
+          </li>
+
+          <li
+            id="menuAdminMobile"
+            class="nav-item mb-2 mt-4 border-top border-light border-opacity-25 pt-3 d-none"
+          >
+            <span
+              class="small text-white text-opacity-50 px-3 d-block mb-2 fw-bold"
+              >MÓDULO SEGURIDAD</span
+            >
+            <a href="panel-control.html" class="nav-link text-white"
+              ><i class="bi bi-shield-lock me-2"></i> Panel de Control</a
+            >
+          </li>
+        </ul>
+
+        <div class="mt-auto pt-3 border-top border-light border-opacity-25">
+          <button
+            id="btnLogoutMobile"
+            class="btn btn-danger w-100 fw-bold shadow-sm text-start"
+          >
+            <i class="bi bi-box-arrow-right me-2"></i> Cerrar Sesión
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      const token = localStorage.getItem("auth_token");
+      if (!token) window.location.href = "login.html";
+
+      const switchVista = document.getElementById("switchVistaFamiliar");
+      const lblVista = document.getElementById("lblVistaFamiliar");
+      const selectLimite = document.getElementById("limiteSelect");
+      const tablaMovimientos = document.getElementById("tabla-movimientos");
+      const tablaReportes = document.getElementById("tabla-reportes");
+
+      function mostrarAlerta(mensaje, isError = false) {
+        const alertBox = document.getElementById("alertMessage");
+        const alertText = document.getElementById("alertText");
+        alertBox.className = `alert alert-dismissible fade show border-0 shadow-sm mb-4 ${isError ? "alert-danger" : "alert-success"}`;
+        alertBox.classList.remove("d-none");
+        alertText.innerHTML = `<i class="bi ${isError ? "bi-exclamation-triangle-fill" : "bi-check-circle-fill"} me-2"></i> ${mensaje}`;
+      }
+
+      async function fetchDashboardData() {
+        const vista = switchVista.checked ? "familiar" : "personal";
+        const limite = selectLimite.value;
+
+        try {
+          const response = await fetch(
+            `http://127.0.0.1:8000/api/dashboard?vista=${vista}&limite=${limite}`,
+            {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${token}`,
+                Accept: "application/json",
+              },
+            },
+          );
+
+          // Si el servidor detecta que el usuario está inactivo (403), mostramos la pantalla de bloqueo
+          if (response.status === 403) {
+            document.body.innerHTML += `
+              <div class="position-fixed top-0 start-0 w-100 h-100 bg-secondary bg-opacity-75 d-flex justify-content-center align-items-center" style="z-index: 9999;">
+                  <div class="card border-0 shadow-lg p-5 text-center" style="max-width: 450px;">
+                      <i class="bi bi-person-fill-lock text-danger display-1 mb-3"></i>
+                      <h3 class="fw-bold text-dark">Acceso Restringido</h3>
+                      <p class="text-secondary mb-4">Tu cuenta fue suspendida por el administrador de esta familia.</p>
+                      <button class="btn btn-danger w-100 fw-bold py-2 shadow-sm" onclick="ejecutarLogout()">
+                          <i class="bi bi-box-arrow-right me-2"></i> Cerrar Sesión
+                      </button>
+                  </div>
+              </div>`;
+            document.body.style.overflow = "hidden"; // Ocultamos la barra de scroll para que no puedan bajar
+            return; // Detenemos cualquier otro código
+          }
+
+          if (response.status === 401) {
+            localStorage.removeItem("auth_token");
+            window.location.href = "login.html";
+            return;
+          }
+
+          // ... resto de tu código de carga de tarjetas ...
+
+          if (response.status === 401) {
+            localStorage.removeItem("auth_token");
+            window.location.href = "login.html";
+            return;
+          }
+
+          const { data } = await response.json();
+
+          // 1. Actualizar Tarjetas
+          document.getElementById("total-ingresos").innerText =
+            data.resumen.total_ingresos.toFixed(2);
+          document.getElementById("total-gastos").innerText =
+            data.resumen.total_gastos.toFixed(2);
+
+          // Corrección visual: si el saldo es negativo, mostramos 0.00 como protección
+          let saldo = data.resumen.saldo_disponible;
+          if (saldo < 0) saldo = 0;
+          document.getElementById("saldo-disponible").innerText =
+            saldo.toFixed(2);
+
+          const saldoCard = document.getElementById("saldo-card");
+          if (data.resumen.saldo_disponible < 0) {
+            saldoCard.classList.replace("bg-primary", "bg-danger");
+          } else {
+            saldoCard.classList.replace("bg-danger", "bg-primary");
+          }
+
+          // 2. Actualizar Tabla Movimientos
+          tablaMovimientos.innerHTML = "";
+          if (data.ultimos_movimientos.length === 0) {
+            tablaMovimientos.innerHTML = `<tr><td colspan="3" class="text-center text-muted py-4">No hay movimientos recientes.</td></tr>`;
+          } else {
+            data.ultimos_movimientos.forEach((mov) => {
+              const esIngreso = mov.transaction_type === "income";
+              const colorClass = esIngreso ? "text-success" : "text-danger";
+              const signo = esIngreso ? "+" : "-";
+
+              tablaMovimientos.innerHTML += `
+              <tr>
+                  <td class="px-4 py-2 align-middle">${mov.description || "Sin concepto"}</td>
+                  <td class="px-4 py-2 align-middle"><span class="badge bg-secondary opacity-75">${mov.user ? mov.user.name : "Sistema"}</span></td>
+                  <td class="px-4 py-2 align-middle text-end ${colorClass} fw-bold">${signo}${parseFloat(mov.amount).toFixed(2)} Bs</td>
+              </tr>`;
+            });
+          }
+
+          // 3. Actualizar Tabla Reportes
+          tablaReportes.innerHTML = "";
+          if (
+            !data.reportes_historial ||
+            data.reportes_historial.length === 0
+          ) {
+            tablaReportes.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-4">No hay reportes generados aún.</td></tr>`;
+          } else {
+            data.reportes_historial.forEach((rep) => {
+              const balanceClass =
+                rep.balance >= 0 ? "text-success" : "text-danger";
+              tablaReportes.innerHTML += `
+                <tr>
+                    <td class="px-4 py-2 align-middle small fw-bold text-secondary">${rep.start_date.split(" ")[0]} <br> ${rep.end_date.split(" ")[0]}</td>
+                    <td class="px-4 py-2 align-middle text-end text-success">${parseFloat(rep.total_income).toFixed(2)}</td>
+                    <td class="px-4 py-2 align-middle text-end text-danger">${parseFloat(rep.total_expense).toFixed(2)}</td>
+                    <td class="px-4 py-2 align-middle text-end ${balanceClass} fw-bold">${parseFloat(rep.balance).toFixed(2)} Bs</td>
+                </tr>`;
+            });
+          }
+        } catch (error) {
+          console.error("Error conectando con la API:", error);
+        }
+      }
+
+      // LÓGICA DEL PANEL DE REPORTES
+      const repTipo = document.getElementById("repTipo");
+      const colMes = document.getElementById("colMes");
+      const colAnio = document.getElementById("repAnio").parentElement; // El div del Año
+
+      // Ocultar Año y Mes dependiendo de lo que elijas
+      repTipo.addEventListener("change", function () {
+        if (this.value === "anual") {
+          colMes.classList.add("d-none");
+          colAnio.classList.remove("d-none");
+        } else if (this.value === "mensual") {
+          colMes.classList.remove("d-none");
+          colAnio.classList.remove("d-none");
+        } else {
+          // Para Top Categorías, Miembros y Pagos no necesitamos fechas
+          colMes.classList.add("d-none");
+          colAnio.classList.add("d-none");
+        }
+      });
+
+      document
+        .getElementById("formGenerarReporte")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const btn = document.getElementById("btnGenerarRep");
+          btn.innerHTML =
+            '<span class="spinner-border spinner-border-sm"></span>...';
+          btn.disabled = true;
+
+          const payload = {
+            tipo: repTipo.value,
+            anio: document.getElementById("repAnio").value,
+            mes: document.getElementById("repMes").value,
+          };
+
+          try {
+            const response = await fetch(
+              "http://127.0.0.1:8000/api/reportes/generar",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                  Accept: "application/json",
+                },
+                body: JSON.stringify(payload),
+              },
+            );
+
+            const data = await response.json();
+
+            if (response.ok) {
+              // 1. SI TRAE DATOS ESPECIALES (Categorías, Miembros, Pagos) -> Va a la Pizarra de abajo
+              if (data.data_especial) {
+                const panelEspecial = document.getElementById(
+                  "panelReporteEspecial",
+                );
+                const contenidoEspecial = document.getElementById(
+                  "contenidoReporteEspecial",
+                );
+
+                let htmlEspecial = `<h6 class="fw-bold text-primary mb-3">${data.message}</h6><ul class='list-group list-group-flush border shadow-sm rounded'>`;
+
+                data.data_especial.forEach((row) => {
+                  if (payload.tipo === "top_categorias") {
+                    htmlEspecial += `<li class='list-group-item d-flex justify-content-between align-items-center'>${row.categoria} <span class='text-danger fw-bold'>${parseFloat(row.total_gastado).toFixed(2)} Bs</span></li>`;
+                  } else if (payload.tipo === "por_miembro") {
+                    htmlEspecial += `<li class='list-group-item'><strong>${row.miembro} (${row.rol})</strong><br><span class='small'>Ingresó: <span class='text-success fw-bold'>+${parseFloat(row.ingresos_aportados).toFixed(2)}</span> | Gastó: <span class='text-danger fw-bold'>-${parseFloat(row.gastos_realizados).toFixed(2)}</span></span></li>`;
+                  } else if (payload.tipo === "pagos_programados") {
+                    htmlEspecial += `<li class='list-group-item d-flex justify-content-between align-items-center'>Estado ${row.estado.toUpperCase()}: <span class='badge bg-primary rounded-pill'>${row.cantidad} pagos</span><span class='fw-bold'>${parseFloat(row.monto_total).toFixed(2)} Bs</span></li>`;
+                  }
+                });
+
+                htmlEspecial += "</ul>";
+                contenidoEspecial.innerHTML = htmlEspecial; // Escribimos en la pizarra
+                panelEspecial.classList.remove("d-none"); // Quitamos la invisibilidad
+              } else {
+                // 2. SI ES MENSUAL O ANUAL -> Solo mostramos mensaje verde arriba y recargamos tabla
+                mostrarAlerta(data.message);
+                fetchDashboardData();
+              }
+            } else {
+              mostrarAlerta(data.error || "Fallo al generar el reporte", true);
+            }
+          } catch (error) {
+            mostrarAlerta(
+              "Error de red al intentar conectar con el servidor.",
+              true,
+            );
+          } finally {
+            btn.innerHTML =
+              '<i class="bi bi-lightning-charge me-1"></i>Generar';
+            btn.disabled = false;
+          }
+        });
+
+      // FUNCIÓN PARA EL BOTÓN LIMPIAR DE LA PIZARRA
+      window.limpiarReporteEspecial = function () {
+        const panelEspecial = document.getElementById("panelReporteEspecial");
+        const contenidoEspecial = document.getElementById(
+          "contenidoReporteEspecial",
+        );
+        contenidoEspecial.innerHTML = ""; // Borra los datos
+        panelEspecial.classList.add("d-none"); // Esconde el cuadro
+      };
+
+      // Listeners Globales
+      switchVista.addEventListener("change", () => {
+        lblVista.innerText = switchVista.checked
+          ? "Vista Familiar"
+          : "Vista Personal";
+        fetchDashboardData();
+      });
+      selectLimite.addEventListener("change", fetchDashboardData);
+
+      document
+        .getElementById("btnLogout")
+        .addEventListener("click", async () => {
+          await fetch("http://127.0.0.1:8000/api/logout", {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+            },
+          });
+          localStorage.removeItem("auth_token");
+          window.location.href = "login.html";
+        });
+
+      // =========================================================
+      // CONTROL DE ACCESO VISUAL POR ROLES (PC y Celular)
+      // =========================================================
+      document.addEventListener("DOMContentLoaded", function () {
+        const roleId = localStorage.getItem("user_role_id");
+
+        // Si es Administrador (role_id == 1) activamos los accesos VIP
+        if (roleId == 1) {
+          // Elementos de Escritorio (Sidebar)
+          const menuAdmin = document.getElementById("menu-admin-item");
+          const menuSuscripcion = document.getElementById("menuSuscripcion");
+          if (menuAdmin) menuAdmin.classList.remove("d-none");
+          if (menuSuscripcion) menuSuscripcion.classList.remove("d-none");
+
+          // Elementos de Celular (Offcanvas)
+          const menuAdminMobile = document.getElementById("menuAdminMobile");
+          const menuSuscripcionMobile = document.getElementById(
+            "menuSuscripcionMobile",
+          );
+          if (menuAdminMobile) menuAdminMobile.classList.remove("d-none");
+          if (menuSuscripcionMobile)
+            menuSuscripcionMobile.classList.remove("d-none");
+        }
+      });
+
+      // =========================================================
+      // ACCIÓN UNIFICADA DE LOGOUT (PC y Celular)
+      // =========================================================
+      const ejecutarLogout = async () => {
+        try {
+          await fetch("http://127.0.0.1:8000/api/logout", {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+            },
+          });
+        } catch (error) {
+          console.error(
+            "Error de red al revocar sesión en el servidor:",
+            error,
+          );
+        }
+        // Limpieza de credenciales locales pase lo que pase
+        localStorage.removeItem("auth_token");
+        localStorage.removeItem("user_role_id");
+        window.location.href = "login.html";
+      };
+
+      // Enganchamos la misma función a ambos botones si existen en la pantalla
+      const btnLogout = document.getElementById("btnLogout");
+      const btnLogoutMobile = document.getElementById("btnLogoutMobile");
+
+      if (btnLogout) btnLogout.addEventListener("click", ejecutarLogout);
+      if (btnLogoutMobile)
+        btnLogoutMobile.addEventListener("click", ejecutarLogout);
+
+      fetchDashboardData();
+    </script>
+  </body>
+</html>

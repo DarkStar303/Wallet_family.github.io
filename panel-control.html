@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wallet Family - Panel de Control Familiar</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body class="bg-light">
+    <div class="d-flex flex-column vh-100 overflow-hidden">
+      
+      <div class="d-md-none bg-primary w-100 text-white p-3 d-flex justify-content-between align-items-center shadow-sm">
+        <h2 class="h5 mb-0 fw-bold"><i class="bi bi-wallet2 me-2"></i>Wallet Family</h2>
+        <button class="btn btn-outline-light btn-sm border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#menuCelular">
+          <i class="bi bi-list fs-1"></i>
+        </button>
+      </div>
+
+      <div class="d-flex flex-grow-1 overflow-hidden">
+        
+        <div
+          class="bg-primary text-white p-3 d-none d-md-flex flex-column shadow"
+          style="width: 280px; min-width: 280px; overflow-y: auto"
+        >
+          <h2
+            class="text-center border-bottom border-light border-opacity-25 pb-3 mb-4 fs-4 mt-2 fw-bold"
+          >
+            Wallet Family
+          </h2>
+
+          <ul class="nav nav-pills flex-column mb-auto">
+            <li class="nav-item mb-2">
+              <a href="dashboard.html" class="nav-link text-white"
+                ><i class="bi bi-house-door me-2"></i> Resumen</a
+              >
+            </li>
+            <li class="nav-item mb-2">
+              <a href="ingresos.html" class="nav-link text-white"
+                ><i class="bi bi-cash-coin me-2"></i> Ingresos</a
+              >
+            </li>
+            <li class="nav-item mb-2">
+              <a href="gastos.html" class="nav-link text-white"
+                ><i class="bi bi-graph-down-arrow me-2"></i> Gastos</a
+              >
+            </li>
+            <li class="nav-item mb-2">
+              <a href="categorias.html" class="nav-link text-white"
+                ><i class="bi bi-tags me-2"></i> Categorías</a
+              >
+            </li>
+            <li class="nav-item mb-2">
+              <a href="pagos.html" class="nav-link text-white"
+                ><i class="bi bi-calendar-check me-2"></i> Pagos Programados</a
+              >
+            </li>
+            <li class="nav-item mb-2">
+              <a href="perfil.html" class="nav-link text-white"
+                ><i class="bi bi-person-circle me-2"></i> Mi Perfil</a
+              >
+            </li>
+            <li class="nav-item mb-2">
+              <a href="auditoria.html" class="nav-link text-white"
+                ><i class="bi bi-list-columns-reverse me-2"></i> Historial</a
+              >
+            </li>
+
+            <li id="menuSuscripcion" class="nav-item mb-2 d-none">
+              <a href="suscripcion.html" class="nav-link text-white">
+                <i class="bi bi-shield-check me-2"></i> Mi Suscripción
+              </a>
+            </li>
+
+            <li
+              id="menu-admin-item"
+              class="nav-item mb-2 mt-4 border-top border-light border-opacity-25 pt-3 d-none"
+            >
+              <span
+                class="small text-white text-opacity-50 px-3 d-block mb-2 fw-bold"
+                >MÓDULO SEGURIDAD</span
+              >
+              <a href="panel-control.html" class="nav-link text-white">
+                <i class="bi bi-shield-lock me-2"></i> Panel de Control
+              </a>
+            </li>
+          </ul>
+
+          <div class="mt-4">
+            <button
+              id="btnLogout"
+              class="btn btn-danger w-100 fw-bold shadow-sm text-start"
+            >
+              <i class="bi bi-box-arrow-right me-2"></i> Cerrar Sesión
+            </button>
+          </div>
+        </div>
+
+        <div class="flex-grow-1 p-3 p-md-4 overflow-auto bg-light">
+          <div
+            class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-4"
+          >
+            <div>
+              <h1 class="h3 mb-0 text-dark fw-bold">
+                <i class="bi bi-shield-lock text-primary me-2"></i> Panel de
+                Administración
+              </h1>
+              <p class="mb-0 text-secondary small">
+                Gestiona el acceso y los datos de los miembros de tu familia.
+              </p>
+            </div>
+          </div>
+
+          <div
+            id="alertMessage"
+            class="d-none alert alert-dismissible fade show border-0 shadow-sm"
+            role="alert"
+          >
+            <span id="alertText"></span>
+            <button
+              type="button"
+              class="btn-close"
+              onclick="
+                document.getElementById('alertMessage').classList.add('d-none')
+              "
+            ></button>
+          </div>
+
+          <div class="row g-4 mb-4">
+            <div class="col-md-12">
+              <div
+                class="card border-primary border-2 shadow-sm bg-primary bg-opacity-10"
+              >
+                <div class="card-body p-4 text-center">
+                  <h5 class="text-primary fw-bold mb-3">Código de Invitación</h5>
+                  <div
+                    class="d-inline-flex align-items-center bg-white border border-primary rounded p-2 shadow-sm"
+                  >
+                    <span
+                      class="fs-3 fw-bold text-dark px-4"
+                      style="letter-spacing: 5px"
+                      id="familyCode"
+                      >Cargando...</span
+                    >
+                    <button
+                      class="btn btn-primary ms-3 fw-bold"
+                      onclick="copiarCodigo()"
+                    >
+                      <i class="bi bi-copy me-2"></i>Copiar
+                    </button>
+                  </div>
+                  <p class="text-secondary small mt-3 mb-0">
+                    Credencial de acceso para nuevos miembros.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-0 pt-4 pb-2">
+              <h5 class="card-title fw-bold mb-0">
+                Entidades Activas Registradas
+              </h5>
+            </div>
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="table table-hover mb-0 align-middle">
+                  <thead class="table-light">
+                    <tr>
+                      <th>Nombre Completo</th>
+                      <th>Parentesco</th>
+                      <th>Teléfono Celular</th>
+                      <th>Nivel de Privilegios</th>
+                      <th class="text-center">Control de Acceso</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tablaMiembros">
+                    <tr>
+                      <td colspan="5" class="text-center text-muted py-4">
+                        Estableciendo conexión segura...
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div> </div> <div class="offcanvas offcanvas-start bg-primary text-white" tabindex="-1" id="menuCelular">
+      <div class="offcanvas-header border-bottom border-light border-opacity-25">
+        <h5 class="offcanvas-title fw-bold">Menú Principal</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+      </div>
+      <div class="offcanvas-body d-flex flex-column"> <ul class="nav nav-pills flex-column mb-auto">
+            <li class="nav-item mb-2"><a href="dashboard.html" class="nav-link text-white"><i class="bi bi-house-door me-2"></i> Resumen</a></li>
+            <li class="nav-item mb-2"><a href="ingresos.html" class="nav-link text-white"><i class="bi bi-cash-coin me-2"></i> Ingresos</a></li>
+            <li class="nav-item mb-2"><a href="gastos.html" class="nav-link text-white"><i class="bi bi-graph-down-arrow me-2"></i> Gastos</a></li>
+            <li class="nav-item mb-2"><a href="categorias.html" class="nav-link text-white"><i class="bi bi-tags me-2"></i> Categorías</a></li>
+            <li class="nav-item mb-2"><a href="pagos.html" class="nav-link text-white"><i class="bi bi-calendar-check me-2"></i> Pagos</a></li>
+            <li class="nav-item mb-2"><a href="perfil.html" class="nav-link text-white"><i class="bi bi-person-circle me-2"></i> Mi Perfil</a></li>
+            <li class="nav-item mb-2"><a href="auditoria.html" class="nav-link text-white"><i class="bi bi-list-columns-reverse me-2"></i> Historial</a></li>
+            
+            <li id="menuSuscripcionMobile" class="nav-item mb-2 d-none">
+              <a href="suscripcion.html" class="nav-link text-white"><i class="bi bi-shield-check me-2"></i> Mi Suscripción</a>
+            </li>
+            
+            <li id="menuAdminMobile" class="nav-item mb-2 mt-4 border-top border-light border-opacity-25 pt-3 d-none">
+              <span class="small text-white text-opacity-50 px-3 d-block mb-2 fw-bold">MÓDULO SEGURIDAD</span>
+              <a href="panel-control.html" class="nav-link text-white"><i class="bi bi-shield-lock me-2"></i> Panel de Control</a>
+            </li>
+          </ul>
+
+          <div class="mt-auto pt-3 border-top border-light border-opacity-25">
+            <button id="btnLogoutMobile" class="btn btn-danger w-100 fw-bold shadow-sm text-start">
+              <i class="bi bi-box-arrow-right me-2"></i> Cerrar Sesión
+            </button>
+          </div>
+        </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="editarMiembroModal"
+      tabindex="-1"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+          <div class="modal-header bg-primary text-white border-0">
+            <h5 class="modal-title fw-bold">Modificar Datos de Entidad</h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body p-4">
+            <form id="formEditarMiembro">
+              <input type="hidden" id="editar_id" />
+              <div class="mb-3">
+                <label class="form-label text-secondary small fw-bold"
+                  >Nombres</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="editar_name"
+                  required
+                />
+              </div>
+              <div class="row mb-3 g-3">
+                <div class="col-md-6">
+                  <label class="form-label text-secondary small fw-bold"
+                    >Apellido Paterno</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="editar_last_name"
+                    required
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label text-secondary small fw-bold"
+                    >Apellido Materno</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="editar_second_last_name"
+                  />
+                </div>
+              </div>
+              <div class="row mb-3 g-3">
+                <div class="col-md-6">
+                  <label class="form-label text-secondary small fw-bold"
+                    >Fecha de Nacimiento</label
+                  >
+                  <input
+                    type="date"
+                    class="form-control"
+                    id="editar_birth_date"
+                    required
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label text-secondary small fw-bold"
+                    >Teléfono Celular</label
+                  >
+                  <input type="tel" class="form-control" id="editar_phone" />
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label text-secondary small fw-bold"
+                  >Parentesco en la Familia</label
+                >
+                <select class="form-select" id="editar_family_member" required>
+                  <option value="mother">Madre</option>
+                  <option value="father">Padre</option>
+                  <option value="child">Hijo / Hija</option>
+                </select>
+              </div>
+              <div
+                class="alert alert-light border text-secondary small mb-0 mt-3"
+              >
+                <i class="bi bi-info-circle me-2"></i
+                ><strong>Protocolo de Seguridad:</strong> El rol Administrador
+                es exclusivo e intransferible visualmente.
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer bg-light border-0">
+            <button
+              type="button"
+              class="btn btn-light text-secondary fw-bold"
+              data-bs-dismiss="modal"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              class="btn btn-primary fw-bold px-4"
+              form="formEditarMiembro"
+            >
+              Aceptar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      const token = localStorage.getItem("auth_token");
+      if (!token) window.location.href = "login.html";
+
+      function mostrarAlerta(mensaje, isError = false) {
+        const alertBox = document.getElementById("alertMessage");
+        const alertText = document.getElementById("alertText");
+        alertBox.className = `alert alert-dismissible fade show border-0 shadow-sm ${isError ? "alert-danger" : "alert-success"}`;
+        alertBox.classList.remove("d-none");
+        alertText.innerHTML = `<i class="bi ${isError ? "bi-exclamation-triangle-fill" : "bi-check-circle-fill"} me-2"></i> ${mensaje}`;
+      }
+
+      function copiarCodigo() {
+        const code = document.getElementById("familyCode").innerText;
+        navigator.clipboard.writeText(code).then(() => {
+          mostrarAlerta("Código copiado al portapapeles con éxito.");
+        });
+      }
+
+      async function fetchFamilyData() {
+        try {
+          const response = await fetch("http://127.0.0.1:8000/api/panel-control", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+            },
+          });
+
+          if (response.status === 401 || response.status === 403) {
+            window.location.href = "dashboard.html";
+            return;
+          }
+
+          const jsonResponse = await response.json();
+          const family = jsonResponse.data;
+
+          document.getElementById("familyCode").innerText = family.invitation_code;
+
+          const tabla = document.getElementById("tablaMiembros");
+          tabla.innerHTML = "";
+
+          family.users.forEach((miembro) => {
+            let parentesco = "Desconocido";
+            if (miembro.family_member === "mother") parentesco = "Madre";
+            if (miembro.family_member === "father") parentesco = "Padre";
+            if (miembro.family_member === "child") parentesco = "Hijo / Hija";
+
+            const rolBadge = miembro.role_id === 1
+                ? '<span class="badge bg-primary">Administrador Titular</span>'
+                : '<span class="badge bg-secondary">Miembro Híbrido</span>';
+
+            // Lógica visual: Si está inactivo, pintamos todo de gris y cambiamos el ícono
+            const esActivo = miembro.status !== 'inactive';
+            const filaClase = esActivo ? "" : "bg-light text-muted opacity-50";
+            const iconoOjo = esActivo ? "bi-eye" : "bi-eye-slash";
+            const colorOjo = esActivo ? "btn-outline-danger" : "btn-outline-success";
+            const tituloOjo = esActivo ? "Suspender Usuario" : "Reactivar Usuario";
+
+            const jsonEncoded = encodeURIComponent(JSON.stringify(miembro));
+
+            tabla.innerHTML += `
+                        <tr class="${filaClase}">
+                            <td class="fw-bold ${esActivo ? 'text-dark' : 'text-muted'}">
+                                <i class="bi bi-person text-secondary me-2"></i> ${miembro.name} ${miembro.last_name}
+                            </td>
+                            <td class="text-secondary">${parentesco}</td>
+                            <td class="text-secondary">${miembro.phone || "N/A"}</td>
+                            <td>${rolBadge}</td>
+                            <td class="text-center">
+                                <button class="btn btn-sm btn-outline-primary border-0" onclick="prepararEdicion('${jsonEncoded}')" title="Modificar Datos" ${!esActivo ? 'disabled' : ''}>
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="btn btn-sm ${colorOjo} border-0" onclick="cambiarEstadoMiembro(${miembro.id}, '${miembro.name}', ${esActivo})" title="${tituloOjo}">
+                                    <i class="bi ${iconoOjo}"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+          });
+        } catch (error) {
+          console.error("Error al obtener la estructura familiar:", error);
+        }
+      }
+
+      // Funciones de Edición se mantienen iguales...
+      window.prepararEdicion = function (jsonMiembro) {
+        const miembro = JSON.parse(decodeURIComponent(jsonMiembro));
+        document.getElementById("editar_id").value = miembro.id;
+        document.getElementById("editar_name").value = miembro.name;
+        document.getElementById("editar_last_name").value = miembro.last_name;
+        document.getElementById("editar_second_last_name").value = miembro.second_last_name || "";
+        document.getElementById("editar_birth_date").value = miembro.birth_date.split("T")[0];
+        document.getElementById("editar_phone").value = miembro.phone || "";
+        document.getElementById("editar_family_member").value = miembro.family_member;
+
+        new bootstrap.Modal(document.getElementById("editarMiembroModal")).show();
+      };
+
+      document.getElementById("formEditarMiembro").addEventListener("submit", async function (e) {
+        e.preventDefault();
+        const id = document.getElementById("editar_id").value;
+        const payload = {
+          name: document.getElementById("editar_name").value,
+          last_name: document.getElementById("editar_last_name").value,
+          second_last_name: document.getElementById("editar_second_last_name").value,
+          birth_date: document.getElementById("editar_birth_date").value,
+          phone: document.getElementById("editar_phone").value,
+          family_member: document.getElementById("editar_family_member").value,
+        };
+
+        const response = await fetch(`http://127.0.0.1:8000/api/usuarios/${id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          bootstrap.Modal.getInstance(document.getElementById("editarMiembroModal")).hide();
+          mostrarAlerta(data.message);
+          fetchFamilyData();
+        } else {
+          mostrarAlerta(data.message || data.error || "Falla de validación en la mutación.", true);
+        }
+      });
+
+      // NUEVO: Lógica de Suspensión / Reactivación
+      window.cambiarEstadoMiembro = async function (id, nombre, estaActivo) {
+        const accionTexto = estaActivo ? "suspender temporalmente a" : "reactivar a";
+        if (confirm(`¿Confirmar que deseas ${accionTexto} ${nombre}?`)) {
+          const response = await fetch(`http://127.0.0.1:8000/api/usuarios/${id}/estado`, {
+            method: "PATCH", // O el método que hayas definido en tus rutas de Laravel
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+            },
+          });
+
+          const data = await response.json();
+          if (response.ok) {
+            mostrarAlerta(data.message);
+            fetchFamilyData();
+          } else {
+            mostrarAlerta(data.error || "Operación denegada.", true);
+          }
+        }
+      };
+
+      // Logout y Control de Roles se mantienen igual
+      const ejecutarLogout = async () => {
+        try {
+          await fetch("http://127.0.0.1:8000/api/logout", {
+            method: "POST",
+            headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
+          });
+        } catch (error) {}
+        localStorage.removeItem("auth_token");
+        localStorage.removeItem("user_role_id");
+        window.location.href = "login.html";
+      };
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const btnLogout = document.getElementById("btnLogout");
+        const btnLogoutMobile = document.getElementById("btnLogoutMobile");
+        if (btnLogout) btnLogout.addEventListener("click", ejecutarLogout);
+        if (btnLogoutMobile) btnLogoutMobile.addEventListener("click", ejecutarLogout);
+
+        const roleId = localStorage.getItem("user_role_id");
+        if (roleId == 1) {
+          const menuAdmin = document.getElementById("menu-admin-item");
+          const menuSuscripcion = document.getElementById("menuSuscripcion");
+          if (menuAdmin) menuAdmin.classList.remove("d-none");
+          if (menuSuscripcion) menuSuscripcion.classList.remove("d-none");
+
+          const menuAdminMobile = document.getElementById("menuAdminMobile");
+          const menuSuscripcionMobile = document.getElementById("menuSuscripcionMobile");
+          if (menuAdminMobile) menuAdminMobile.classList.remove("d-none");
+          if (menuSuscripcionMobile) menuSuscripcionMobile.classList.remove("d-none");
+        }
+      });
+
+      fetchFamilyData();
+    </script>
+  </body>
+</html>

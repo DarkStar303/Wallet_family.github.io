@@ -1,0 +1,790 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wallet Family - Pagos Programados</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body class="bg-light">
+    <div class="d-flex flex-column vh-100 overflow-hidden">
+      <div
+        class="d-md-none bg-primary w-100 text-white p-3 d-flex justify-content-between align-items-center shadow-sm"
+      >
+        <h2 class="h5 mb-0 fw-bold">
+          <i class="bi bi-wallet2 me-2"></i>Wallet Family
+        </h2>
+        <button
+          class="btn btn-outline-light btn-sm border-0"
+          type="button"
+          data-bs-toggle="offcanvas"
+          data-bs-target="#menuCelular"
+        >
+          <i class="bi bi-list fs-1"></i>
+        </button>
+      </div>
+
+      <div class="d-flex flex-grow-1 overflow-hidden">
+        <div
+          class="bg-primary text-white p-3 d-none d-md-flex flex-column shadow"
+          style="width: 280px; min-width: 280px; overflow-y: auto"
+        >
+          <h2
+            class="text-center border-bottom border-light border-opacity-25 pb-3 mb-4 fs-4 mt-2 fw-bold"
+          >
+            Wallet Family
+          </h2>
+
+          <ul class="nav nav-pills flex-column mb-auto">
+            <li class="nav-item mb-2">
+              <a href="dashboard.html" class="nav-link text-white"
+                ><i class="bi bi-house-door me-2"></i> Resumen</a
+              >
+            </li>
+            <li class="nav-item mb-2">
+              <a href="ingresos.html" class="nav-link text-white"
+                ><i class="bi bi-cash-coin me-2"></i> Ingresos</a
+              >
+            </li>
+            <li class="nav-item mb-2">
+              <a href="gastos.html" class="nav-link text-white"
+                ><i class="bi bi-graph-down-arrow me-2"></i> Gastos</a
+              >
+            </li>
+            <li class="nav-item mb-2">
+              <a href="categorias.html" class="nav-link text-white"
+                ><i class="bi bi-tags me-2"></i> Categorías</a
+              >
+            </li>
+            <li class="nav-item mb-2">
+              <a
+                href="pagos.html"
+                class="nav-link text-white active bg-dark bg-opacity-25"
+                ><i class="bi bi-calendar-check me-2"></i> Pagos Programados</a
+              >
+            </li>
+            <li class="nav-item mb-2">
+              <a href="perfil.html" class="nav-link text-white"
+                ><i class="bi bi-person-circle me-2"></i> Mi Perfil</a
+              >
+            </li>
+            <li class="nav-item mb-2">
+              <a href="auditoria.html" class="nav-link text-white"
+                ><i class="bi bi-list-columns-reverse me-2"></i> Historial</a
+              >
+            </li>
+            <li id="menuSuscripcion" class="nav-item mb-2 d-none">
+              <a href="suscripcion.html" class="nav-link text-white">
+                <i class="bi bi-shield-check me-2"></i> Mi Suscripción
+              </a>
+            </li>
+
+            <li
+              id="menu-admin-item"
+              class="nav-item mb-2 mt-4 border-top border-light border-opacity-25 pt-3 d-none"
+            >
+              <span
+                class="small text-white text-opacity-50 px-3 d-block mb-2 fw-bold"
+                >MÓDULO SEGURIDAD</span
+              >
+              <a href="panel-control.html" class="nav-link text-white">
+                <i class="bi bi-shield-lock me-2"></i> Panel de Control
+              </a>
+            </li>
+          </ul>
+
+          <div class="mt-4">
+            <button
+              id="btnLogout"
+              class="btn btn-danger w-100 fw-bold shadow-sm text-start"
+            >
+              <i class="bi bi-box-arrow-right me-2"></i> Cerrar Sesión
+            </button>
+          </div>
+        </div>
+
+        <div class="flex-grow-1 p-3 p-md-4 overflow-auto bg-light">
+          <div
+            class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-4"
+          >
+            <div>
+              <h1 class="h3 mb-0 text-dark">
+                <i class="bi bi-calendar-check text-info me-2"></i> Pagos
+                Programados
+              </h1>
+              <p class="mb-0 text-secondary small">
+                Organiza tus cuentas por pagar y evita vencimientos.
+              </p>
+            </div>
+            <button
+              class="btn btn-info text-dark fw-bold shadow-sm"
+              data-bs-toggle="modal"
+              data-bs-target="#nuevoPagoModal"
+            >
+              <i class="bi bi-plus-lg me-1"></i> Programar Pago
+            </button>
+          </div>
+
+          <div
+            id="alertMessage"
+            class="d-none alert alert-dismissible fade show border-0 shadow-sm"
+            role="alert"
+          >
+            <span id="alertText"></span>
+            <button
+              type="button"
+              class="btn-close"
+              onclick="
+                document.getElementById('alertMessage').classList.add('d-none')
+              "
+            ></button>
+          </div>
+
+          <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body p-3 bg-light rounded">
+              <form id="formFiltros" class="row g-3 align-items-end">
+                <div class="col-md-6">
+                  <label class="form-label text-secondary small fw-bold mb-1"
+                    >Filtrar por Mes</label
+                  >
+                  <input
+                    type="month"
+                    id="filter_month"
+                    class="form-control border-0 shadow-sm bg-white"
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label text-secondary small fw-bold mb-1"
+                    >Estado del Pago</label
+                  >
+                  <select
+                    id="filter_status"
+                    class="form-select border-0 shadow-sm"
+                  >
+                    <option value="todos">Todos los estados</option>
+                    <option value="pending">Pendientes</option>
+                    <option value="paid">Pagados</option>
+                    <option value="overdue">Vencidos</option>
+                  </select>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <div class="card border-0 shadow-sm">
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="table table-hover mb-0 align-middle">
+                  <thead class="table-light">
+                    <tr>
+                      <th>Concepto</th>
+                      <th>Categoría</th>
+                      <th>Monto</th>
+                      <th>Fecha Límite</th>
+                      <th>Estado</th>
+                      <th class="text-center">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tablaPagos">
+                    <tr>
+                      <td colspan="6" class="text-center text-muted py-4">
+                        Sincronizando con el servidor...
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="offcanvas offcanvas-start bg-primary text-white"
+      tabindex="-1"
+      id="menuCelular"
+    >
+      <div
+        class="offcanvas-header border-bottom border-light border-opacity-25"
+      >
+        <h5 class="offcanvas-title fw-bold">Menú Principal</h5>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          data-bs-dismiss="offcanvas"
+        ></button>
+      </div>
+      <div class="offcanvas-body d-flex flex-column">
+        <ul class="nav nav-pills flex-column mb-auto">
+          <li class="nav-item mb-2">
+            <a href="dashboard.html" class="nav-link text-white"
+              ><i class="bi bi-house-door me-2"></i> Resumen</a
+            >
+          </li>
+          <li class="nav-item mb-2">
+            <a href="ingresos.html" class="nav-link text-white"
+              ><i class="bi bi-cash-coin me-2"></i> Ingresos</a
+            >
+          </li>
+          <li class="nav-item mb-2">
+            <a href="gastos.html" class="nav-link text-white"
+              ><i class="bi bi-graph-down-arrow me-2"></i> Gastos</a
+            >
+          </li>
+          <li class="nav-item mb-2">
+            <a href="categorias.html" class="nav-link text-white"
+              ><i class="bi bi-tags me-2"></i> Categorías</a
+            >
+          </li>
+          <li class="nav-item mb-2">
+            <a href="pagos.html" class="nav-link text-white active bg-dark bg-opacity-25"
+              ><i class="bi bi-calendar-check me-2"></i> Pagos</a
+            >
+          </li>
+          <li class="nav-item mb-2">
+            <a href="perfil.html" class="nav-link text-white"
+              ><i class="bi bi-person-circle me-2"></i> Mi Perfil</a
+            >
+          </li>
+          <li class="nav-item mb-2">
+            <a href="auditoria.html" class="nav-link text-white"
+              ><i class="bi bi-list-columns-reverse me-2"></i> Historial</a
+            >
+          </li>
+
+          <li id="menuSuscripcionMobile" class="nav-item mb-2 d-none">
+            <a href="suscripcion.html" class="nav-link text-white"
+              ><i class="bi bi-shield-check me-2"></i> Mi Suscripción</a
+            >
+          </li>
+
+          <li
+            id="menuAdminMobile"
+            class="nav-item mb-2 mt-4 border-top border-light border-opacity-25 pt-3 d-none"
+          >
+            <span
+              class="small text-white text-opacity-50 px-3 d-block mb-2 fw-bold"
+              >MÓDULO SEGURIDAD</span
+            >
+            <a href="panel-control.html" class="nav-link text-white"
+              ><i class="bi bi-shield-lock me-2"></i> Panel de Control</a
+            >
+          </li>
+        </ul>
+
+        <div class="mt-auto pt-3 border-top border-light border-opacity-25">
+          <button
+            id="btnLogoutMobile"
+            class="btn btn-danger w-100 fw-bold shadow-sm text-start"
+          >
+            <i class="bi bi-box-arrow-right me-2"></i> Cerrar Sesión
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="nuevoPagoModal"
+      tabindex="-1"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+          <div class="modal-header bg-info text-dark border-0">
+            <h5 class="modal-title fw-bold">Programar Pago</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body p-4">
+            <form id="formNuevoPago">
+              <div class="mb-3">
+                <label class="form-label small fw-bold">Concepto</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="crear_name"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label class="form-label small fw-bold">Monto (Bs)</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  min="0.01"
+                  class="form-control"
+                  id="crear_amount"
+                  onkeydown="
+                    if (
+                      event.key === '-' ||
+                      event.key === 'e' ||
+                      event.key === '+'
+                    )
+                      event.preventDefault();
+                  "
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label class="form-label small fw-bold">Fecha Límite</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  id="crear_deadline_date"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label class="form-label small fw-bold">Categoría</label>
+                <select class="form-select" id="crear_category_id" required>
+                  <option value="" disabled selected>
+                    Resolviendo dependencias...
+                  </option>
+                </select>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer bg-light border-0">
+            <button
+              type="button"
+              class="btn btn-light text-secondary fw-bold"
+              data-bs-dismiss="modal"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              class="btn btn-info fw-bold px-4"
+              form="formNuevoPago"
+            >
+              Guardar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="editarPagoModal"
+      tabindex="-1"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+          <div class="modal-header bg-primary text-white border-0">
+            <h5 class="modal-title fw-bold">Editar Pago Programado</h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body p-4">
+            <form id="formEditarPago">
+              <input type="hidden" id="editar_id" />
+              
+              <div class="mb-3">
+                <label class="form-label text-secondary small fw-bold">Concepto</label>
+                <input type="text" class="form-control" id="editar_name" required />
+              </div>
+              
+              <div class="mb-3">
+                <label class="form-label text-secondary small fw-bold">Monto (Bs)</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  min="0.01"
+                  class="form-control"
+                  id="editar_amount"
+                  onkeydown="if (event.key === '-' || event.key === 'e' || event.key === '+') event.preventDefault();"
+                  required
+                />
+              </div>
+              
+              <div class="mb-3">
+                <label class="form-label text-secondary small fw-bold">Fecha Límite</label>
+                <input type="date" class="form-control" id="editar_deadline_date" required />
+              </div>
+              
+              <div class="mb-3">
+                <label class="form-label text-secondary small fw-bold">Categoría</label>
+                <select class="form-select" id="editar_category_id" required></select>
+              </div>
+
+              <div class="mb-3 border-top pt-3">
+                <label class="form-label text-danger small fw-bold"
+                  ><i class="bi bi-exclamation-circle me-1"></i> Estado del Pago</label
+                >
+                <select class="form-select border-danger" id="editar_status" required>
+                  <option value="pending">Pendiente</option>
+                  <option value="paid">Pagado</option>
+                  <option value="overdue">Vencido</option>
+                </select>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer bg-light border-0">
+            <button
+              type="button"
+              class="btn btn-light text-secondary fw-bold"
+              data-bs-dismiss="modal"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              class="btn btn-primary fw-bold px-4"
+              form="formEditarPago"
+            >
+              Actualizar Pago
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      const token = localStorage.getItem("auth_token");
+      if (!token) window.location.href = "login.html";
+
+      // Preconfiguración de variables temporales
+      const today = new Date();
+      // Bloquear fechas pasadas en los calendarios
+      const inputCrearFecha = document.getElementById("crear_deadline_date");
+      const inputEditarFecha = document.getElementById("editar_deadline_date");
+      
+      // Convertimos la fecha de hoy a texto (Ej: 2026-06-10) y la ponemos como límite mínimo
+      const fechaMinima = today.toISOString().split("T")[0];
+      
+      if(inputCrearFecha) inputCrearFecha.min = fechaMinima;
+      if(inputEditarFecha) inputEditarFecha.min = fechaMinima;
+      const currentMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}`;
+      document.getElementById("filter_month").value = currentMonth;
+
+      function mostrarAlerta(mensaje, isError = false) {
+        const alertBox = document.getElementById("alertMessage");
+        const alertText = document.getElementById("alertText");
+        alertBox.className = `alert alert-dismissible fade show border-0 shadow-sm ${isError ? "alert-danger" : "alert-success"}`;
+        alertBox.classList.remove("d-none");
+        alertText.innerHTML = `<i class="bi ${isError ? "bi-exclamation-triangle-fill" : "bi-check-circle-fill"} me-2"></i> ${mensaje}`;
+      }
+
+      async function fetchPagos() {
+        const month = document.getElementById("filter_month").value || "todos";
+        const status = document.getElementById("filter_status").value;
+
+        try {
+          const response = await fetch(
+            `http://127.0.0.1:8000/api/pagos?month=${month}&status=${status}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                Accept: "application/json",
+              },
+            },
+          );
+
+          if (response.status === 401) {
+            localStorage.removeItem("auth_token");
+            window.location.href = "login.html";
+            return;
+          }
+
+          const jsonResponse = await response.json();
+          const data = jsonResponse.data;
+
+          // Resolución de dependencias (Categorías para ambos modales)
+          const selectCrear = document.getElementById("crear_category_id");
+          const selectEditar = document.getElementById("editar_category_id");
+          if (data.categorias_disponibles) {
+            let optionsHtml =
+              '<option value="" disabled selected>Selecciona una categoría...</option>';
+            data.categorias_disponibles.forEach((cat) => {
+              optionsHtml += `<option value="${cat.id}">${cat.name}</option>`;
+            });
+            selectCrear.innerHTML = optionsHtml;
+            selectEditar.innerHTML = optionsHtml; // Poblamos también el select de edición
+          }
+
+          const tabla = document.getElementById("tablaPagos");
+          tabla.innerHTML = "";
+
+          if (data.pagos.length === 0) {
+            tabla.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-secondary">No se encontraron pagos programados.</td></tr>`;
+            return;
+          }
+
+          data.pagos.forEach((payment) => {
+            const categoria = payment.category ? payment.category.name : "N/A";
+            const monto = parseFloat(payment.amount).toFixed(2);
+            const deadline = payment.deadline_date.split("T")[0];
+
+            let statusBadge = "";
+            if (payment.status === "paid")
+              statusBadge = '<span class="badge bg-success">Pagado</span>';
+            else if (payment.status === "overdue")
+              statusBadge = '<span class="badge bg-danger">Vencido</span>';
+            else
+              statusBadge =
+                '<span class="badge bg-warning text-dark">Pendiente</span>';
+
+            // Botón rápido para marcar como pagado desde la tabla (Usa la función simplificada)
+            const btnPaid =
+              payment.status !== "paid"
+                ? `<button class="btn btn-sm btn-outline-success border-0 me-1" onclick="marcarPagadoRapido(${payment.id})" title="Marcar como pagado"><i class="bi bi-check-lg"></i></button>`
+                : "";
+
+            // Empaquetamos el objeto de pago en JSON seguro para mandarlo a la función de editar
+            const jsonCoded = encodeURIComponent(JSON.stringify(payment));
+
+            tabla.innerHTML += `
+                        <tr>
+                            <td class="fw-bold text-dark">${payment.name}</td>
+                            <td><span class="badge bg-secondary bg-opacity-10 text-secondary">${categoria}</span></td>
+                            <td class="text-danger fw-bold">${monto} Bs</td>
+                            <td>${deadline}</td>
+                            <td>${statusBadge}</td>
+                            <td class="text-center">
+                                ${btnPaid}
+                                <button class="btn btn-sm btn-outline-primary border-0 me-1" onclick="abrirModalEdicion('${jsonCoded}')" title="Editar Pago">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger border-0" onclick="ejecutarEliminacion(${payment.id})" title="Eliminar">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+          });
+        } catch (error) {
+          console.error("Excepción en la resolución del endpoint:", error);
+        }
+      }
+
+      // Eventos change para evitar usar botón submit de búsqueda
+      document.getElementById("filter_month").addEventListener("change", fetchPagos);
+      document.getElementById("filter_status").addEventListener("change", fetchPagos);
+
+      // CREAR NUEVO PAGO
+      document
+        .getElementById("formNuevoPago")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+          const payload = {
+            name: document.getElementById("crear_name").value,
+            amount: document.getElementById("crear_amount").value,
+            deadline_date: document.getElementById("crear_deadline_date").value,
+            category_id: document.getElementById("crear_category_id").value,
+          };
+
+          const response = await fetch("http://127.0.0.1:8000/api/pagos", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+            },
+            body: JSON.stringify(payload),
+          });
+
+          const data = await response.json();
+          if (response.ok) {
+            bootstrap.Modal.getInstance(
+              document.getElementById("nuevoPagoModal"),
+            ).hide();
+            document.getElementById("formNuevoPago").reset();
+            mostrarAlerta(data.message);
+            fetchPagos();
+          } else {
+            mostrarAlerta(
+              data.message || data.error || "Error al procesar la inserción.",
+              true,
+            );
+          }
+        });
+
+      // ABRIR MODAL CON TODOS LOS DATOS PARA EDITAR
+      window.abrirModalEdicion = function (jsonPayment) {
+        const payment = JSON.parse(decodeURIComponent(jsonPayment));
+        
+        document.getElementById("editar_id").value = payment.id;
+        document.getElementById("editar_name").value = payment.name;
+        document.getElementById("editar_amount").value = payment.amount;
+        document.getElementById("editar_deadline_date").value = payment.deadline_date.split("T")[0];
+        document.getElementById("editar_category_id").value = payment.category_id;
+        document.getElementById("editar_status").value = payment.status;
+        
+        new bootstrap.Modal(document.getElementById("editarPagoModal")).show();
+      };
+
+      // GUARDAR EDICIÓN COMPLETA DEL PAGO
+      document
+        .getElementById("formEditarPago")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+          
+          const id = document.getElementById("editar_id").value;
+          const payload = {
+            name: document.getElementById("editar_name").value,
+            amount: document.getElementById("editar_amount").value,
+            deadline_date: document.getElementById("editar_deadline_date").value,
+            category_id: document.getElementById("editar_category_id").value,
+            status: document.getElementById("editar_status").value,
+          };
+
+          const response = await fetch(`http://127.0.0.1:8000/api/pagos/${id}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+            },
+            body: JSON.stringify(payload),
+          });
+
+          const data = await response.json();
+          if (response.ok) {
+            const modalEl = document.getElementById("editarPagoModal");
+            const modalObj = bootstrap.Modal.getInstance(modalEl);
+            if (modalObj) modalObj.hide();
+
+            mostrarAlerta(data.message);
+            fetchPagos();
+          } else {
+            mostrarAlerta(
+              data.message || data.error || "Error de persistencia en la actualización.",
+              true,
+            );
+          }
+        });
+
+      // FUNCIÓN ATAJO: Marcar solo como pagado desde el botón verde de la tabla
+      window.marcarPagadoRapido = async function (id) {
+          // Buscamos los datos actuales en el servidor para reenviarlos sin perder nada
+          const responseGet = await fetch(`http://127.0.0.1:8000/api/pagos?month=todos&status=todos`, {
+              headers: {
+                  Authorization: `Bearer ${token}`,
+                  Accept: "application/json",
+              },
+          });
+          const jsonResponse = await responseGet.json();
+          const pagoOriginal = jsonResponse.data.pagos.find(p => p.id === id);
+
+          if(pagoOriginal){
+              const payload = {
+                  name: pagoOriginal.name,
+                  amount: pagoOriginal.amount,
+                  deadline_date: pagoOriginal.deadline_date.split("T")[0],
+                  category_id: pagoOriginal.category_id,
+                  status: 'paid' // Aquí inyectamos el cambio mágico
+              };
+
+              const responsePut = await fetch(`http://127.0.0.1:8000/api/pagos/${id}`, {
+                  method: "PUT",
+                  headers: {
+                      "Content-Type": "application/json",
+                      Authorization: `Bearer ${token}`,
+                      Accept: "application/json",
+                  },
+                  body: JSON.stringify(payload),
+              });
+              
+              if(responsePut.ok){
+                  mostrarAlerta("Pago marcado como completado.");
+                  fetchPagos();
+              }
+          }
+      };
+
+      // ELIMINACIÓN DE PAGO
+      window.ejecutarEliminacion = async function (id) {
+        if (
+          confirm(
+            "¿Confirmas la eliminación permanente de esta programación de pago?",
+          )
+        ) {
+          const response = await fetch(
+            `http://127.0.0.1:8000/api/pagos/${id}`,
+            {
+              method: "DELETE",
+              headers: {
+                Authorization: `Bearer ${token}`,
+                Accept: "application/json",
+              },
+            },
+          );
+
+          const data = await response.json();
+          if (response.ok) {
+            mostrarAlerta(data.message);
+            fetchPagos();
+          } else {
+            mostrarAlerta(
+              data.error || "Fallo de autorización al eliminar.",
+              true,
+            );
+          }
+        }
+      };
+
+      // =========================================================
+      // CONTROL DE ACCESO VISUAL Y LOGOUT UNIFICADO
+      // =========================================================
+      const ejecutarLogout = async () => {
+        try {
+          await fetch("http://127.0.0.1:8000/api/logout", {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+            },
+          });
+        } catch (error) {
+          console.error("Error de red al revocar sesión en el servidor:", error);
+        }
+        localStorage.removeItem("auth_token");
+        localStorage.removeItem("user_role_id");
+        window.location.href = "login.html";
+      };
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const btnLogout = document.getElementById("btnLogout");
+        const btnLogoutMobile = document.getElementById("btnLogoutMobile");
+        if (btnLogout) btnLogout.addEventListener("click", ejecutarLogout);
+        if (btnLogoutMobile) btnLogoutMobile.addEventListener("click", ejecutarLogout);
+
+        const roleId = localStorage.getItem("user_role_id");
+
+        if (roleId == 1) {
+          const menuAdmin = document.getElementById("menu-admin-item");
+          const menuSuscripcion = document.getElementById("menuSuscripcion");
+          if (menuAdmin) menuAdmin.classList.remove("d-none");
+          if (menuSuscripcion) menuSuscripcion.classList.remove("d-none");
+
+          const menuAdminMobile = document.getElementById("menuAdminMobile");
+          const menuSuscripcionMobile = document.getElementById("menuSuscripcionMobile");
+          if (menuAdminMobile) menuAdminMobile.classList.remove("d-none");
+          if (menuSuscripcionMobile) menuSuscripcionMobile.classList.remove("d-none");
+        }
+      });
+
+      fetchPagos();
+    </script>
+  </body>
+</html>

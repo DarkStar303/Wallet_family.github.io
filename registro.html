@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wallet Family - Registro</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body
+    class="bg-light d-flex justify-content-center align-items-center min-vh-100 py-5"
+  >
+    <div
+      class="card shadow-sm p-4 border-0"
+      style="width: 100%; max-width: 550px"
+    >
+      <h2 class="text-center text-primary mb-4 fw-bold">
+        Únete a Wallet Family 💰
+      </h2>
+
+      <div
+        id="error-container"
+        class="d-none alert alert-danger shadow-sm small py-2 fw-bold text-center"
+      ></div>
+
+      <div
+        id="premium-banner"
+        class="d-none alert alert-primary border-0 shadow-sm small py-2 text-center mb-3"
+      >
+        <i class="bi bi-lightning-charge-fill me-1"></i>
+        Crea tu cuenta para activar el plan <strong>Premium</strong>
+      </div>
+
+      <form id="formRegistro">
+        <h5 class="text-secondary border-bottom pb-2 mb-3 mt-2">
+          <i class="bi bi-person me-2"></i>Paso 1: Tus Datos
+        </h5>
+
+        <div class="row mb-3">
+          <div class="col-md-12">
+            <label class="form-label text-secondary small mb-1"
+              >Nombre(s)</label
+            >
+            <input
+              type="text"
+              class="form-control"
+              id="name"
+              required
+              placeholder="Escribe tus nombres"
+              oninput="this.value=this.value.replace(/[0-9]/g,'')"
+            />
+          </div>
+        </div>
+
+        <div class="row mb-3 g-3">
+          <div class="col-md-6">
+            <label class="form-label text-secondary small mb-1" 
+              >Apellido Paterno</label
+            >
+            <input type="text" class="form-control" id="last_name" required oninput="this.value=this.value.replace(/[0-9]/g,'')"/>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label text-secondary small mb-1"
+              >Apellido Materno</label
+            >
+            <input
+              oninput="this.value = this.value.replace(/[0-9]/g, '')"
+              type="text"
+              class="form-control"
+              id="second_last_name"
+            />
+          </div>
+        </div>
+
+        <div class="row mb-3 g-3">
+          <div class="col-md-6">
+            <label class="form-label text-secondary small mb-1"
+              >Fecha de Nacimiento</label
+            >
+            <input type="date" class="form-control" id="birth_date" required />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label text-secondary small mb-1"
+              >Teléfono Celular</label
+            >
+            <input
+              type="tel"
+              class="form-control"
+              id="phone"
+              inputmode="numeric"
+              oninput="this.value = this.value.replace(/\D/g, '')"
+              pattern="[0-9]{8}"
+              required
+              title="Por favor, ingresa solo números (8 dígitos)"
+              placeholder="Ej. 71234567"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label text-secondary small mb-1"
+            >Tu Rol en la Familia</label
+          >
+          <select class="form-select" id="family_member" required>
+            <option value="" disabled selected>Selecciona una opción...</option>
+            <option value="mother">Madre</option>
+            <option value="father">Padre</option>
+            <option value="child">Hijo / Hija</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label text-secondary small mb-1"
+            >Correo Electrónico</label
+          >
+          <input
+            type="email"
+            class="form-control"
+            id="email"
+            required
+            placeholder="tu@correo.com"
+          />
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label text-secondary small mb-1"
+            >Contraseña <small>(Mín. 6 caracteres)</small></label
+          >
+          <input
+            type="password"
+            class="form-control"
+            id="password"
+            required
+            placeholder="********"
+            minlength="6"
+          />
+        </div>
+
+        <h5 class="text-secondary border-bottom pb-2 mb-3 mt-4">
+          <i class="bi bi-people me-2"></i>Paso 2: Tu Familia
+        </h5>
+
+        <div class="mb-3">
+          <label class="form-label text-secondary small mb-1"
+            >¿Qué deseas hacer?</label
+          >
+          <select class="form-select border-primary" id="action_type" required>
+            <option value="" disabled selected>Elige una opción...</option>
+            <option value="create">
+              Crear una Familia Nueva (Seré el Administrador)
+            </option>
+            <option value="join">
+              Unirme a una Familia Existente (Tengo un código)
+            </option>
+          </select>
+        </div>
+
+        <div
+          id="caja_crear"
+          class="mb-4 d-none bg-primary bg-opacity-10 p-3 rounded border border-primary"
+        >
+          <label class="form-label text-primary small fw-bold mb-1"
+            ><i class="bi bi-house-add me-1"></i>Nombre de tu nueva
+            familia</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            id="family_name"
+            placeholder="Ej: Familia Pérez"
+          />
+          <small class="text-secondary mt-1 d-block"
+            >Serás el jefe de familia y podrás invitar a otros.</small
+          >
+        </div>
+
+        <div
+          id="caja_unirse"
+          class="mb-4 d-none bg-info bg-opacity-10 p-3 rounded border border-info"
+        >
+          <label class="form-label text-info text-dark small fw-bold mb-1"
+            ><i class="bi bi-key me-1"></i>Código de Invitación</label
+          >
+          <input
+            type="text"
+            class="form-control text-uppercase"
+            id="invite_code"
+            placeholder="WALLET-XXXXXX"
+          />
+          <small class="text-secondary mt-1 d-block"
+            >Pídele este código al administrador de tu familia.</small
+          >
+        </div>
+
+        <button
+          type="submit"
+          class="btn btn-primary w-100 fw-bold py-2 mt-2"
+          id="btnRegistro"
+        >
+          Completar Registro y Entrar
+        </button>
+      </form>
+
+      <div class="text-center mt-4">
+        <a
+          href="login.html"
+          id="linkLogin"
+          class="text-decoration-none small text-secondary"
+          >¿Ya tienes cuenta?
+          <span class="text-primary fw-bold">Inicia sesión aquí</span></a
+        >
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // 1. Configurar lógica de la URL (Redirecciones y Premium)
+        const urlParams = new URLSearchParams(window.location.search);
+        const redirectParam = urlParams.get("redirect");
+        const planParam = urlParams.get("plan");
+
+        if (redirectParam === "suscripcion" && planParam === "premium") {
+          document.getElementById("premium-banner").classList.remove("d-none");
+          document.getElementById("btnRegistro").textContent =
+            "Completar Registro y Activar Premium 💰";
+          document
+            .getElementById("btnRegistro")
+            .classList.replace("btn-primary", "btn-success");
+          document.getElementById("linkLogin").href =
+            "login.html?redirect=suscripcion";
+        }
+
+        // 2. Lógica para restringir edad (Mínimo 15 años)
+        const hoy = new Date();
+        const fechaMax = new Date(
+          hoy.getFullYear() - 15,
+          hoy.getMonth(),
+          hoy.getDate(),
+        );
+        document.getElementById("birth_date").max = fechaMax
+          .toISOString()
+          .split("T")[0];
+
+        // 3. Lógica para mostrar/ocultar los campos del "Paso 2"
+        const selectAction = document.getElementById("action_type");
+        const cajaCrear = document.getElementById("caja_crear");
+        const cajaUnirse = document.getElementById("caja_unirse");
+
+        selectAction.addEventListener("change", function () {
+          if (this.value === "create") {
+            cajaCrear.classList.remove("d-none");
+            cajaUnirse.classList.add("d-none");
+            // Hacer que los campos sean obligatorios
+            document.getElementById("family_name").required = true;
+            document.getElementById("invite_code").required = false;
+          } else if (this.value === "join") {
+            cajaUnirse.classList.remove("d-none");
+            cajaCrear.classList.add("d-none");
+            // Hacer que los campos sean obligatorios
+            document.getElementById("invite_code").required = true;
+            document.getElementById("family_name").required = false;
+          }
+        });
+
+        // 4. ENVÍO DE DATOS A LA API
+        document
+          .getElementById("formRegistro")
+          .addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const btn = document.getElementById("btnRegistro");
+            const errorBox = document.getElementById("error-container");
+
+            const textoOriginal = btn.textContent;
+            btn.innerHTML =
+              '<span class="spinner-border spinner-border-sm"></span> Registrando...';
+            btn.disabled = true;
+            errorBox.classList.add("d-none");
+
+            // Empaquetar TODOS los datos juntos (Usuario + Familia)
+            const payload = {
+              name: document.getElementById("name").value,
+              last_name: document.getElementById("last_name").value,
+              second_last_name:
+                document.getElementById("second_last_name").value,
+              birth_date: document.getElementById("birth_date").value,
+              phone: document.getElementById("phone").value,
+              family_member: document.getElementById("family_member").value,
+              email: document.getElementById("email").value,
+              password: document.getElementById("password").value,
+
+              action_type: document.getElementById("action_type").value,
+              family_name: document.getElementById("family_name").value,
+              invite_code: document.getElementById("invite_code").value,
+            };
+
+            try {
+              const response = await fetch(
+                "http://127.0.0.1:8000/api/registro",
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                  },
+                  body: JSON.stringify(payload),
+                },
+              );
+
+              const data = await response.json();
+
+              if (response.ok) {
+                // Guardar el token VIP en el navegador
+                localStorage.setItem("auth_token", data.access_token);
+                localStorage.setItem("user_role_id", data.user.role_id);
+
+                // Si venía buscando Premium, lo mandamos allá
+                if (redirectParam === "suscripcion") {
+                  window.location.href = "suscripcion.html";
+                } else {
+                  // Si es normal, va al panel
+                  window.location.href = "dashboard.html";
+                }
+              } else {
+                // Si hubo errores (Ej: el correo ya existe, o el código Wallet está mal)
+                errorBox.innerText =
+                  data.error ||
+                  data.message ||
+                  "Error en los datos. Revisa tu información.";
+                errorBox.classList.remove("d-none");
+                window.scrollTo(0, 0); // Subir la página para ver el error
+              }
+            } catch (error) {
+              errorBox.innerText = "Error de conexión con el servidor.";
+              errorBox.classList.remove("d-none");
+            } finally {
+              btn.innerHTML = textoOriginal;
+              btn.disabled = false;
+            }
+          });
+      });
+    </script>
+  </body>
+</html>
